@@ -1,25 +1,25 @@
 # Discord Module System
 
-Un système de modules ultra-simple et 100% typé TypeScript pour Discord.js
+An ultra-simple and fully type-safe TypeScript module system for Discord.js
 
-## 🚀 À quoi ça sert ?
+## 🚀 What’s it for ?
 
-Transformez votre bot Discord en modules indépendants activables/désactivables :
+Turn your Discord bot into independent modules that can be enabled or disabled at will.
 
-✨ Fonctionnalités principales
+✨ Fonctionalities
 
-    🔗 Auto-binding : module.events → client.on() automatique
+    🔗 Auto-binding : module.events → automatic client.on()
 
-    🎯 Noms libres : handleMessage() ou myPingHandler() → vous choisissez !
+    🎯 Free name : handleMessage() or myPingHandler() → you choose !
 
-    ⚡ Performant : Seulement les events déclarés sont bindés
+    ⚡ Performance : Only declared event are bind
 
-    🔄 Hot reload : Activez/désactivez modules sans redémarrer
+    🔄 Hot reload : Enable/Disable problematic modules without restarting the bot !
 
     Discordjs : Always up to date and completely compatible
 
-## 🎮 Utilisation (2 minutes)
-1. Module exemple
+## 🎮 Usage (2 minutes)
+1. Module example
 ```ts
     export class PongModule extends Module {
         public name: string = "Pong Module";
@@ -47,7 +47,7 @@ Transformez votre bot Discord en modules indépendants activables/désactivables
     
     }
 ```
-2. Bot principal
+2. Bot
 ```ts
 client.once(Events.ClientReady, () => {
     const manager = ModuleManager.createInstance(client); // ModuleManager is a singleton
@@ -59,6 +59,6 @@ client.once(Events.ClientReady, () => {
 
 | Functionnalities    | Without Modules  | With Module   |
 |---------------------|------------------|---------------|
-| clean client.on     | ❌                | ✅             |
+| Hidden client.on    | ❌                | ✅             |
 | Live module enabled | ❌ (Need restart) | ✅ (One click) |
 | Organised           | ❌                | ✅             |
