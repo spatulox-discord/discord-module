@@ -1,7 +1,7 @@
 import {
     ButtonInteraction,
     Client,
-    ContainerBuilder, Message, MessageEditOptions,
+    ContainerBuilder, Events, Message, MessageEditOptions,
     MessageFlags, SeparatorBuilder, SeparatorSpacingSize,
     TextDisplayBuilder
 } from "discord.js";
@@ -22,7 +22,36 @@ export class ModuleManager {
 
     public static createInstance(client: Client): ModuleManager {
         ModuleManager.instance = new ModuleManager(client);
+        this.initClient(client);
         return ModuleManager.instance;
+    }
+
+    private static initClient(client: Client) {
+        client.on(Events.InteractionCreate, async (interaction) => {
+            if(interaction.isButton()){
+                const custID = interaction.customId
+                console.log(custID)
+                const manager = ModuleManager.getInstance()
+                if(custID.startsWith("toggle_")){
+                    const module = manager?.getModule(custID.split("toggle_")[1]!)
+
+                    if(module instanceof MultiModule){
+                        interaction.reply(module.showModule()) // This show all the modules inside the MultiModule.
+                    } else if (module instanceof Module){
+                        module.toggle()
+                        manager?.updateMultiModuleUI(interaction, module) // This update the MultiModule component when a module is updated
+                    }
+                } else if(custID.startsWith("all_")){ // Only the "title" of an interaction of a MultiModule
+                    const module = manager?.getModule(custID.split("toggle_")[1]!)
+                    if(module instanceof MultiModule){ // Should not be a simple Module, because button which begin with "all" are always "titles" of MultiModule Component
+                        module.enabled ? await module.disableAll(interaction) : await module.enableAll(interaction)
+                        manager?.updateMultiModuleUI(interaction, module)
+                    }
+                    console.log(module)
+                }
+                //manager?.updateMainUI()
+            }
+        })
     }
 
     public static getInstance(): ModuleManager | null {
