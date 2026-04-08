@@ -16,6 +16,8 @@ Turn your Discord bot into independent modules that can be enabled or disabled a
 
     🔄 Hot reload : Enable/Disable problematic modules without restarting the bot !
 
+    ✅ Automatic Interactions Binding (name <-> function/method) : No more mess between interactions detection, dispatch and function/method call
+
     Discordjs : Always up to date and completely compatible
 
 ## 🎮 Usage (2 minutes)
@@ -61,7 +63,7 @@ client.once(Events.ClientReady, () => {
     manager.sendUIToChannel("channelID") // Optionnal, only if you want to dynamically toggle modules
 
     // Register commands
-    interaction.registerSlash("ping", PongModule.pong_interaction)
+    interactionManager.registerSlash("ping", PongModule.pong_interaction)
 });
 ```
 
@@ -70,3 +72,4 @@ client.once(Events.ClientReady, () => {
 | Hidden client.on    | ❌                | ✅             |
 | Live module enabled | ❌ (Need restart) | ✅ (One click) |
 | Organised           | ❌                | ✅             |
+| Automatic interaction binding           | ❌                | ✅             |
