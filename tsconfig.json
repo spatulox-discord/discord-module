@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "ES2022",
     "module": "nodenext",
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
@@ -15,7 +15,7 @@
     "declarationMap": true,
 
     /*Only use the es2021/dom lib*/ /*need for "replaceAll" for example*/
-    "lib": ["es2021", "dom"],
+    "lib": ["es2022", "dom"],
 
     /*JSON*/
     "moduleResolution": "nodenext",
