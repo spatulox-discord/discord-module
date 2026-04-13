@@ -1,0 +1,15 @@
+# Changelog
+Date format : dd/mm/yyy
+
+### 13/04/2026 - 0.3.0
+- InteractionManager : adds support for prefix and suffix identifier matching
+
+### 08/04/2026 - 0.2.1
+- Add usage example for InteractionManager
+
+### 08/04/2026 - 0.2.0
+- Introduce an InteractionManager to register interaction, same as module system
+
+### 18/03/2026 - 0.1.0
+- First official release
+- Add a Module system
