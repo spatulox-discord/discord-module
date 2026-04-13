@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import {Module} from './Module';
 import {MultiModule} from "./MultiModule";
+import {ModuleRegistry} from "./ModuleRegistry";
 
 type ModuleMap = Record<string, Module[]>
 
@@ -22,6 +23,7 @@ export class ModuleManager {
 
     public static createInstance(client: Client): ModuleManager {
         ModuleManager.instance = new ModuleManager(client);
+        ModuleRegistry.setModuleManager(ModuleManager.instance);
         this.initClient(client);
         return ModuleManager.instance;
     }
@@ -142,9 +144,7 @@ export class ModuleManager {
 
     getModule(name: string): Module | undefined {
         for (const parentModules of Object.values(this._modules)) {
-            const found = parentModules.find(m =>
-                m.name.toLowerCase() === name.toLowerCase()
-            );
+            const found = parentModules.find(m => m.name.toLowerCase() === name.toLowerCase());
             if (found) return found;
         }
     }

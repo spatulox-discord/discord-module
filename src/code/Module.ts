@@ -6,8 +6,7 @@ import {
     SectionBuilder,
     TextDisplayBuilder
 } from 'discord.js';
-
-//export type ModuleEventsMap = Partial<Record<keyof ClientEvents, (...args: any[]) => any>>;
+import {ModuleRegistry} from "./ModuleRegistry";
 
 type ModuleEventHandler =
     | ((...args: any[]) => any)
@@ -22,6 +21,10 @@ export abstract class Module     {
     private _enabled = false;
 
     public abstract get events(): ModuleEventsMap;
+
+    public get instance() : Module | undefined {
+        return ModuleRegistry.manager?.getModule(this.name);
+    }
 
     public setParent(parent: string): void {
         this._parent = parent;
