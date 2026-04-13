@@ -57,7 +57,7 @@ Turn your Discord bot into independent modules that can be enabled or disabled a
 ```ts
 client.once(Events.ClientReady, () => {
     const manager = ModuleManager.createInstance(client); // ModuleManager is a singleton
-    const interactionManager = InteractionManager.createInstance(client); // ModuleManager is a singleton
+    const interactionManager = InteractionManager.createInstance(client); // InteractionManager is a singleton
     manager.register(new PongModule(client)); // You can register a Module or a MultiModule (Menu for Module)
     manager.enableAll(); // By default, a Module is disable
     manager.sendUIToChannel("channelID") // Optionnal, only if you want to dynamically toggle modules
