@@ -1,6 +1,9 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 13/04/2026 - 0.3.1
+- Update README.md : Add explanation for InteractionManager when passing class method when registering interactions
+
 ### 13/04/2026 - 0.3.0
 - InteractionManager : adds support for prefix and suffix identifier matching
 

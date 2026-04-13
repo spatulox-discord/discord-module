@@ -64,6 +64,14 @@ client.once(Events.ClientReady, () => {
 
     // Register commands
     interactionManager.registerSlash("ping", PongModule.pong_interaction)
+    
+    // If you want to link a Method of a class
+    // This will crash because you only pass the method of the class, not the full class instance, so "randomBoolean" is undefined
+    interactionManager.registerButton("btn_randombool_accessor", new BtnModuleTest().testAccessor) // This test is here to try to acces a var in an instance of a class wich is undefined
+    // With a method of a class (which require a this.method() of this.var, you need to do it this way :
+    const classInstance = new BtnModuleTest() // Create the instance
+    interactionManager.registerButton("btn_randombool_accessor", (interaction: ButtonInteraction) => { return classInstance.testAccessor(interaction) }) // Pass an unknow func which call the class method with the instance
+    interactionManager.registerButton("btn_randombool_accessor", () => { return classInstance.testAccessorWithoutInteraction() })
 });
 ```
 
