@@ -2,7 +2,6 @@ import {
     ButtonBuilder,
     ButtonStyle,
     ClientEvents,
-    ContainerBuilder, InteractionReplyOptions, MessageFlags,
     SectionBuilder,
     TextDisplayBuilder
 } from 'discord.js';
@@ -44,13 +43,6 @@ export abstract class Module     {
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${this.enabled ? "🟢" : "🔴"} ${this.name}`))
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(`${this.description}`))
             .setButtonAccessory(new ButtonBuilder().setLabel(this.enabled ? "Disabled" : "Enable").setCustomId(name).setStyle(this.enabled ? ButtonStyle.Danger : ButtonStyle.Success))
-    }
-
-    public showModule(): InteractionReplyOptions {
-        return {
-            components: [new ContainerBuilder().addSectionComponents(this.createModuleUI())],
-            flags: MessageFlags.IsComponentsV2,
-        }
     }
 
     get enabled(): boolean {return this._enabled}

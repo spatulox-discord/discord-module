@@ -1,7 +1,9 @@
 import { ModuleManager } from './ModuleManager.js';
 import {
-    ButtonInteraction,
-    ContainerBuilder, InteractionReplyOptions, MessageFlags, SeparatorBuilder, SeparatorSpacingSize,
+    ButtonBuilder,
+    ButtonInteraction, ButtonStyle,
+    ContainerBuilder, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
 import {Module, ModuleEventsMap} from "./Module";
 
@@ -48,14 +50,6 @@ export abstract class MultiModule extends Module {
 
         return container;
     }
-
-    override showModule(): InteractionReplyOptions{
-        return {
-            components: [this.createSubmoduleUI()],
-            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
-        }
-    }
-
 
     override enable(interaction?: ButtonInteraction) {
         super.enable()
