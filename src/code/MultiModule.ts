@@ -23,10 +23,22 @@ export abstract class MultiModule extends Module {
         return [] as ModuleEventsMap;
     }
 
+    override createModuleUI(): SectionBuilder {
+        const name = `show_${this.name.toLowerCase()}`;
+
+        if(name.length > 100){
+            throw new Error(`In order to create the Module UI, buttons customId should not be more than 100 char, please reduce the name of your Module : ${this.name}`);
+        }
+        return new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${this.enabled ? "🟢" : "🔴"} ${this.name}`))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`${this.description}`))
+            .setButtonAccessory(new ButtonBuilder().setLabel("Show Module").setCustomId(name).setStyle(ButtonStyle.Primary))
+    }
+
     protected createSubmoduleUI(){
         const container = new ContainerBuilder();
 
-        container.addSectionComponents(this.createModuleUI("all"))
+        container.addSectionComponents(this.createModuleUI())
 
         container.addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setDivider(true))
 

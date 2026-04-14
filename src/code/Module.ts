@@ -34,9 +34,8 @@ export abstract class Module     {
         return this._parent
     }
 
-    public createModuleUI(namePrefix?: string): SectionBuilder {
-        const namePrefixStr = namePrefix ? `${namePrefix}_` : '';
-        const name = `${namePrefixStr}toggle_${this.name.toLowerCase()}`;
+    public createModuleUI(): SectionBuilder {
+        const name = `toggle_${this.name.toLowerCase()}`;
 
         if(name.length > 100){
             throw new Error(`In order to create the Module UI, buttons customId should not be more than 100 char, please reduce the name of your Module : ${this.name}`);
