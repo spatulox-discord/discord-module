@@ -49,6 +49,7 @@ export class ModuleManager {
                 mod.setParent(module.name)
                 if(mod instanceof MultiModule) {
                     this.register(mod)
+                    continue
                 }
                 this.registerMod(mod);
             }
