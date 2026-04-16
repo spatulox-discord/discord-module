@@ -8,5 +8,6 @@ export default defineConfig([
         sourcemap: false,                           // Pas de .map
         clean: true,                                // Nettoie dist/
         outDir: 'dist',
+        external: ['discord.js', 'discord-api-types', '@discordjs'],
     }
 ])
