@@ -1,5 +1,8 @@
-import {ButtonInteraction, Client, Events, GatewayIntentBits} from "discord.js";
 import dotenv from "dotenv"
+
+dotenv.config();
+
+import {ButtonInteraction, Client, Events, GatewayIntentBits} from "discord.js";
 import {InteractionMatchType, ModuleManager} from "../index";
 import {MusicMultiModule} from "./Music/MusicMultiModule";
 import {PongModule} from "./PongModule";
@@ -13,8 +16,6 @@ import {RandomModule3} from "./random/RandomModule3";
 import {RandomModule4} from "./random/RandomModule4";
 import {RandomModule5} from "./random/RandomModule5";
 import {RandomModule6} from "./random/RandomModule6";
-
-dotenv.config();
 
 const client = new Client({
     intents: [
