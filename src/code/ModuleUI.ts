@@ -16,7 +16,7 @@ import {Module} from "./Module";
 import {MultiModule} from "./MultiModule";
 import {ModuleRegistry} from "./ModuleRegistry";
 import {InteractionMatchType, InteractionsManager} from "./InteractionsManager";
-import {CacheManager} from "@spatulox/utils";
+import {CacheManager, Time} from "@spatulox/utils";
 
 type TrucBidule = MultiModule | Module | "root"
 type DynamicPage = Record<number, SectionBuilder[]>
@@ -38,6 +38,9 @@ export class ModuleUI {
     private pageIndex: number = 0
     private breadcrumbTrail: string[] = ["Home"]
     private breadcrumbTrailSet: Set<string> = new Set(this.breadcrumbTrail); // Avoid double thing, since sometime discord let user press the button two times...
+
+    private uiResetTimeout: NodeJS.Timeout | null = null;
+    private readonly UI_RESET_TIMEOUT_MS = Time.minute.MIN_02.toMilliseconds();
 
     constructor(client: Client, channel_id: string) {
         this.client = client;
@@ -177,6 +180,31 @@ export class ModuleUI {
         return mod ?? "root"
     }
 
+    private async scheduleUIReset() {
+        // Cancel timer
+        if (this.uiResetTimeout) {
+            clearTimeout(this.uiResetTimeout);
+        }
+
+        if(this.targetedModuleName == "root"){
+            return
+        }
+
+        // Start another one
+        this.uiResetTimeout = setTimeout(() => {
+            this.resetUI().catch(console.error);
+        }, this.UI_RESET_TIMEOUT_MS);
+    }
+
+    private async resetUI() {
+        this.targetedModuleName = "root";
+        this.triggerDynamicPageRebuild = true;
+        this.pageIndex = 0;
+        this.breadcrumbTrail = ["Home"];
+        this.breadcrumbTrailSet = new Set(this.breadcrumbTrail);
+        await this.updateUI();
+    }
+
     private createUI(): (ContainerBuilder | ActionRowBuilder<ButtonBuilder>)[]{
         const multi = this.getTargetedModule()
         if (!multi) {
@@ -283,6 +311,7 @@ export class ModuleUI {
         this.message?.edit({
             components: this.createUI()
         })
+        this.scheduleUIReset();
     }
 
     private async sendUI() {
