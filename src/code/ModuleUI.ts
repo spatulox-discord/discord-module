@@ -300,6 +300,8 @@ export class ModuleUI {
                 flags: MessageFlags.IsComponentsV2
             })
             await this.initCache(message)
+            this.channel = channel // await this.fetchChannel()
+            this.message = message // await this.fetchMessageById()
             return
         }
         throw new Error(`Channel (${this.cacheData.channel_id}) does not exist or is not a valid sendable channel`);
