@@ -1,6 +1,12 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 20/05/2026 - 0.7.0
+- Change :
+  - The UI now reset each 2 minutes
+- Fix :
+  - Sending the ModuleUI message for the first time were unable to be updated
+
 ### 28/04/2026 - 0.6.0
 - Migrate the ModuleUI cache to @spatulox/utils CacheManager
 
