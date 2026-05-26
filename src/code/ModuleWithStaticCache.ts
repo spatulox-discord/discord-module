@@ -30,14 +30,11 @@ export abstract class ModuleWithStaticCache extends Module {
     static async syncCache(cacheData: typeof this.cacheData) : Promise<void>{
         try{
             this.assertOverridden()
-            await this.writeMutex.lock()
             this.cacheData = cacheData
             await this.writeCache()
             await this.loadCache()
         } catch(error){
             console.log(error)
-        } finally {
-            this.writeMutex.unlock()
         }
     }
 
@@ -55,6 +52,13 @@ export abstract class ModuleWithStaticCache extends Module {
     }
 
     static async writeCache(){
-        await CacheManager.writeCache(this.cacheKey, this.cacheData);
+        try {
+            await ModuleWithStaticCache.writeMutex.lock()
+            await CacheManager.writeCache(this.cacheKey, this.cacheData);
+        } catch(error){
+            console.log(error)
+        } finally {
+            ModuleWithStaticCache.writeMutex.unlock()
+        }
     }
 }
