@@ -12,21 +12,32 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder
 } from "discord.js";
-import {Module} from "./Module";
+import {Module, ModuleEventsMap} from "./Module";
 import {MultiModule} from "./MultiModule";
 import {ModuleRegistry} from "./ModuleRegistry";
 import {InteractionMatchType, InteractionsManager} from "./InteractionsManager";
-import {CacheManager, Time} from "@spatulox/utils";
+import {ModuleWithCache} from "./ModuleWithCache";
+import {Time} from "@spatulox/utils";
 
 type TrucBidule = MultiModule | Module | "root"
 type DynamicPage = Record<number, SectionBuilder[]>
 
-export class ModuleUI {
+interface ModuleUICache {
+    channel_id: string,
+    message_id: string
+}
+
+export class ModuleUI extends ModuleWithCache<ModuleUICache> {
+    public name: string = "ModuleUI";
+    public description: string = "Module wich is used to display other modules..."
+    public get events(): ModuleEventsMap {
+        throw new Error("Method not implemented.");
+    }
 
     private client: Client;
 
-    private cacheName: string = "discord-modules.cache"
-    private cacheData: {channel_id: string, message_id: string} = {channel_id: "", message_id: ""}
+    protected cacheKey: string = "discord-modules.cache"
+    protected cacheData: ModuleUICache = {channel_id: "", message_id: ""}
 
     private channel: SendableChannels | null = null;
     private message: Message | null = null
@@ -43,13 +54,14 @@ export class ModuleUI {
     private readonly UI_RESET_TIMEOUT_MS = Time.minute.MIN_02.toMilliseconds();
 
     constructor(client: Client, channel_id: string) {
+        super()
         this.client = client;
         this.cacheData.channel_id = channel_id
         this.setup()
     }
 
     private async setup() {
-        await this.initCache(null)
+        await this.loadCache()
         await this.registerButtons()
         await this.fetchChannel()
         await this.fetchMessageById();
@@ -126,31 +138,6 @@ export class ModuleUI {
         this.pageIndex = newIndex;
         await this.updateUI()
         interaction.deferUpdate()
-    }
-
-    private async initCache(message: Message | null): Promise<void> {
-
-        if(message != null){
-            const data: typeof this.cacheData = {
-                channel_id: message?.channelId ?? this.cacheData.channel_id,
-                message_id: message?.id ?? this.cacheData.message_id
-            }
-
-            if(!await CacheManager.writeCache(this.cacheName, data)){
-                console.error("Impossible to write the cache :/")
-                return
-            }
-        }
-
-        const cache = await CacheManager.getOrCreateCache(this.cacheName, this.cacheData)
-
-        if(!cache){
-            console.error("Impossible to get/create the cache :/")
-            return
-        }
-
-        this.cacheData.channel_id = cache.channel_id
-        this.cacheData.message_id = cache.message_id
     }
 
     private async fetchChannel() {
@@ -328,9 +315,9 @@ export class ModuleUI {
                 components: this.createUI(),
                 flags: MessageFlags.IsComponentsV2
             })
-            await this.initCache(message)
-            this.channel = channel // await this.fetchChannel()
-            this.message = message // await this.fetchMessageById()
+            this.message = message
+            this.cacheData.message_id = message.id
+            await this.writeCache()
             return
         }
         throw new Error(`Channel (${this.cacheData.channel_id}) does not exist or is not a valid sendable channel`);
