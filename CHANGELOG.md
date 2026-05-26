@@ -1,6 +1,11 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 26/05/2026 - 0.8.0
+- Change :
+  - Add two base class with cache (1 static, 1 instance)
+  - ModuleUI is now a real module with a instance cache
+
 ### 20/05/2026 - 0.7.0
 - Change :
   - The UI now reset each 2 minutes
