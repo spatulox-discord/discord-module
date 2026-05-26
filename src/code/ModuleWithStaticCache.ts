@@ -8,7 +8,7 @@ import {CacheManager, SimpleMutex} from "@spatulox/utils";
 export abstract class ModuleWithStaticCache extends Module {
 
     static cacheKey: string
-    static cacheData: any
+    static cacheData: object
 
     private static writeMutex: SimpleMutex = new SimpleMutex()
 
@@ -21,10 +21,12 @@ export abstract class ModuleWithStaticCache extends Module {
         }
     }
 
-    static async loadCache(): Promise<typeof this.cacheData | false> {
+    static async loadCache(): Promise<void> {
         this.assertOverridden()
-        return await CacheManager.getOrCreateCache<typeof this.cacheData>(this.cacheKey, this.cacheData)
-
+        const cache = await CacheManager.getOrCreateCache<typeof this.cacheData>(this.cacheKey, this.cacheData)
+        if(cache) {
+            this.cacheData = cache
+        }
     }
 
     static async syncCache(cacheData: typeof this.cacheData) : Promise<void>{
@@ -42,7 +44,7 @@ export abstract class ModuleWithStaticCache extends Module {
         return this.cacheKey
     }
 
-    static getCache(): string{
+    static getCache(): typeof this.cacheData {
         return this.cacheData
     }
 
