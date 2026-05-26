@@ -4,6 +4,7 @@ Date format : dd/mm/yyy
 ### 26/05/2026 - 0.8.2
 - Fix
   - Loading cache with the `ModuleWithStaticCache` is now the same as `ModuleWithCache`
+  - ModuleUi is no longer be disable
 
 ### 26/05/2026 - 0.8.1
 - Fix

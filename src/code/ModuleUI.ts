@@ -60,6 +60,14 @@ export class ModuleUI extends ModuleWithCache<ModuleUICache> {
         this.setup()
     }
 
+    override disable() {
+        return
+    }
+
+    override toggle() {
+        return
+    }
+
     private async setup() {
         await this.loadCache()
         await this.registerButtons()
