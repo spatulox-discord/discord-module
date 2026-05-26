@@ -16,8 +16,8 @@ import {RandomModule3} from "./random/RandomModule3";
 import {RandomModule4} from "./random/RandomModule4";
 import {RandomModule5} from "./random/RandomModule5";
 import {RandomModule6} from "./random/RandomModule6";
-import {StaticCache} from "./cache/Static";
 import {InstanceCache} from "./cache/Instance";
+import {MiscStatsStaticCache} from "./cache/MiscStatsStaticCache";
 
 const client = new Client({
     intents: [
@@ -33,7 +33,7 @@ client.once(Events.ClientReady, () => {
     const interactionManager = InteractionsManager.createOrGetInstance(client);
     manager.register(new MusicMultiModule())
     //manager.register(new PongModule());
-    manager.register(new StaticCache())
+    manager.register(new MiscStatsStaticCache())
     manager.register(new InstanceCache())
     manager.register(new RandomModule());
     manager.register(new RandomModule1());
