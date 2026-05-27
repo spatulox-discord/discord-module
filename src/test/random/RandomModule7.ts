@@ -1,5 +1,5 @@
 import {Module, ModuleEventsMap} from "../../code/Module";
-import {MultiModule} from "../../code/MultiModule";
+import {MultiModule} from "../../code/modules/MultiModule";
 import {RandomModule8} from "./RandomModule8";
 import {RandomModule9} from "./RandomModule9";
 import {RandomModule10} from "./RandomModule10";

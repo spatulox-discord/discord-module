@@ -1,5 +1,5 @@
 import {ModuleEventsMap} from "../../code/Module";
-import {ModuleWithCache} from "../../code/ModuleWithCache";
+import {ModuleWithCache} from "../../code/modules/ModuleWithCache";
 import {CacheManager} from "@spatulox/utils";
 
 interface cache {

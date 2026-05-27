@@ -12,10 +12,10 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder
 } from "discord.js";
-import {Module, ModuleEventsMap} from "./Module";
+import {Module, ModuleEventsMap} from "../Module";
 import {MultiModule} from "./MultiModule";
-import {ModuleRegistry} from "./ModuleRegistry";
-import {InteractionMatchType, InteractionsManager} from "./InteractionsManager";
+import {ModuleRegistry} from "../ModuleRegistry";
+import {InteractionMatchType, InteractionsManager} from "../InteractionsManager";
 import {ModuleWithCache} from "./ModuleWithCache";
 import {Time} from "@spatulox/utils";
 

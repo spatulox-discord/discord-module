@@ -3,7 +3,7 @@ import {
     //Events
 } from "discord.js";
 import {Module} from './Module';
-import {MultiModule} from "./MultiModule";
+import {MultiModule} from "./modules/MultiModule";
 import {ModuleRegistry} from "./ModuleRegistry";
 
 export type ModuleMap = Record<string, Module[]>

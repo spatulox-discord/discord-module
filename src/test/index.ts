@@ -8,7 +8,7 @@ import {MusicMultiModule} from "./Music/MusicMultiModule";
 import {PongModule} from "./PongModule";
 import {InteractionsManager, InteractionType} from "../code/InteractionsManager";
 import {BtnModuleTest} from "./BtnModuleTest";
-import {ModuleUI} from "../code/ModuleUI";
+import {ModuleUI} from "../code/modules/ModuleUI";
 import {RandomModule} from "./random/RandomModule";
 import {RandomModule1} from "./random/RandomModule1";
 import {RandomModule2} from "./random/RandomModule2";

@@ -1,11 +1,11 @@
-import { ModuleManager } from './ModuleManager.js';
+import { ModuleManager } from '../ModuleManager';
 import {
     ButtonBuilder,
     ButtonInteraction, ButtonStyle,
     ContainerBuilder, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import {Module, ModuleEventsMap} from "./Module";
+import {Module, ModuleEventsMap} from "../Module";
 
 export abstract class MultiModule extends Module {
     private readonly manager;

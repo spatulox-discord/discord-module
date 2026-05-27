@@ -1,4 +1,4 @@
-import {ModuleWithStaticCache} from "../../code/ModuleWithStaticCache";
+import {ModuleWithStaticCache} from "../../code/modules/ModuleWithStaticCache";
 import {CacheManager} from "@spatulox/utils";
 import {ModuleEventsMap} from "../../code/Module";
 
