@@ -70,8 +70,7 @@ export class ModuleUI extends ModuleWithCachedMessage {
     constructor(client: Client, channel_id: string) {
         super()
         this.client = client;
-        this.cacheData.channel_id = channel_id
-        this.setup()
+        this.setup(channel_id)
     }
 
     override disable() {
@@ -82,8 +81,12 @@ export class ModuleUI extends ModuleWithCachedMessage {
         return
     }
 
-    private async setup() {
+    private async setup(channel_id: string): Promise<void> {
         await this.loadCache()
+        if(this.cacheData.channel_id == null || this.cacheData.channel_id == ""){
+            this.cacheData.channel_id = channel_id
+            await this.writeCache()
+        }
         await this.registerButtons()
     }
 
