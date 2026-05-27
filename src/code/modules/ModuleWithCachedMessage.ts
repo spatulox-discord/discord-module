@@ -1,5 +1,5 @@
 import {ModuleWithCache} from "./ModuleWithCache";
-import {Guild, GuildBasedChannel, Message, MessageCreateOptions, MessageEditOptions} from "discord.js";
+import {GuildBasedChannel, Message, MessageCreateOptions, MessageEditOptions} from "discord.js";
 import {Log} from "@spatulox/utils";
 
 interface ModuleWithCachedMessageCache {
@@ -12,16 +12,15 @@ interface ModuleWithCachedMessageCache {
  */
 export abstract class ModuleWithCachedMessage extends ModuleWithCache<ModuleWithCachedMessageCache>{
 
-    protected async initCache(){
-        await this.loadCache()
+    protected override async loadCache(){
+        await super.loadCache()
         await this.ensureMessageExist(true)
         await this.updateOrSendMessage()
     }
 
     private _message: Message | null = null
 
-    abstract getGuild(): Guild
-    abstract getChannelId(): string
+    abstract getChannel(): Promise<GuildBasedChannel | null>
     abstract buildMessage(): string | MessageCreateOptions
     abstract editMessage(): string | MessageEditOptions
 
@@ -29,10 +28,6 @@ export abstract class ModuleWithCachedMessage extends ModuleWithCache<ModuleWith
 
     get message(): Message | null {
         return this._message
-    }
-
-    private async getChannel(): Promise<GuildBasedChannel | null> {
-        return await this.getGuild().channels.fetch(this.getChannelId())
     }
 
     protected async triggerUpdateMessage() {
