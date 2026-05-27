@@ -1,6 +1,10 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 27/05/2026 - 0.9.0
+- Change :
+  - Add `ModuleWithCachedMessage` which basically is just a wrapper of `ModuleWithCache` bu for a message
+
 ### 26/05/2026 - 0.8.2
 - Fix
   - Loading cache with the `ModuleWithStaticCache` is now the same as `ModuleWithCache`
