@@ -4,10 +4,11 @@ import {
     ButtonStyle,
     Client,
     ContainerBuilder,
-    Message,
+    GuildBasedChannel,
+    MessageCreateOptions,
+    MessageEditOptions,
     MessageFlags,
     SectionBuilder,
-    SendableChannels,
     SeparatorBuilder,
     SeparatorSpacingSize,
     TextDisplayBuilder
@@ -16,18 +17,35 @@ import {Module, ModuleEventsMap} from "../Module";
 import {MultiModule} from "./MultiModule";
 import {ModuleRegistry} from "../ModuleRegistry";
 import {InteractionMatchType, InteractionsManager} from "../InteractionsManager";
-import {ModuleWithCache} from "./ModuleWithCache";
 import {Time} from "@spatulox/utils";
+import {ModuleWithCachedMessage} from "./ModuleWithCachedMessage";
 
 type TrucBidule = MultiModule | Module | "root"
 type DynamicPage = Record<number, SectionBuilder[]>
 
-interface ModuleUICache {
-    channel_id: string,
-    message_id: string
-}
+export class ModuleUI extends ModuleWithCachedMessage {
 
-export class ModuleUI extends ModuleWithCache<ModuleUICache> {
+    async getChannel(): Promise<GuildBasedChannel | null> {
+        const chan = await this.client.channels.fetch(this.cacheData.channel_id)
+        if (chan && chan.isSendable() && !chan.isDMBased()){
+                return chan
+        }
+        return null
+    }
+
+    buildMessage(): string | MessageCreateOptions {
+        return {
+            components: this.createUI(),
+            flags: MessageFlags.IsComponentsV2
+        }
+    }
+    editMessage(): string | MessageEditOptions {
+        return {
+            components: this.createUI()
+        }
+    }
+
+
     public name: string = "ModuleUI";
     public description: string = "Module wich is used to display other modules..."
     public get events(): ModuleEventsMap {
@@ -37,11 +55,7 @@ export class ModuleUI extends ModuleWithCache<ModuleUICache> {
     private client: Client;
 
     protected cacheKey: string = "discord-modules.cache"
-    protected cacheData: ModuleUICache = {channel_id: "", message_id: ""}
 
-    private channel: SendableChannels | null = null;
-    private message: Message | null = null
-    //private static message: Message | null = null;
     private targetedModuleName: string | "root" = "root"
     private triggerDynamicPageRebuild: boolean = true;
     private readonly MAX_COMPONENT_PER_PAGE = 40
@@ -71,9 +85,6 @@ export class ModuleUI extends ModuleWithCache<ModuleUICache> {
     private async setup() {
         await this.loadCache()
         await this.registerButtons()
-        await this.fetchChannel()
-        await this.fetchMessageById();
-        await this.sendUI()
     }
 
     private async registerButtons(): Promise<void> {
@@ -146,28 +157,6 @@ export class ModuleUI extends ModuleWithCache<ModuleUICache> {
         this.pageIndex = newIndex;
         await this.updateUI()
         interaction.deferUpdate()
-    }
-
-    private async fetchChannel() {
-        try {
-            const channel = await this.client.channels.fetch(this.cacheData.channel_id);
-
-            if (!channel || !channel?.isTextBased() || !channel?.isSendable()) {
-                throw new Error("Channel not found or not text-based");
-            }
-            this.channel = channel
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    private async fetchMessageById(): Promise<void> {
-        try {
-            if (!this.cacheData.message_id) return
-            this.message = await this.channel?.messages.fetch(this.cacheData.message_id) ?? null
-        } catch (e) {
-            console.error(`The original message haven't been found, it may have been deleted : ${e}`)
-        }
     }
 
     private getTargetedModule(): TrucBidule {
@@ -307,28 +296,6 @@ export class ModuleUI extends ModuleWithCache<ModuleUICache> {
             components: this.createUI()
         })
         this.scheduleUIReset();
-    }
-
-    private async sendUI() {
-        const channel = this.channel
-        if (!channel) {
-            return
-        }
-        if (this.message) {
-            this.updateUI()
-            return
-        }
-        if (channel.isTextBased() && channel.isSendable()) {
-            const message = await channel.send({
-                components: this.createUI(),
-                flags: MessageFlags.IsComponentsV2
-            })
-            this.message = message
-            this.cacheData.message_id = message.id
-            await this.writeCache()
-            return
-        }
-        throw new Error(`Channel (${this.cacheData.channel_id}) does not exist or is not a valid sendable channel`);
     }
 
 
