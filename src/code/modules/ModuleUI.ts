@@ -41,7 +41,8 @@ export class ModuleUI extends ModuleWithCachedMessage {
     }
     editMessage(): string | MessageEditOptions {
         return {
-            components: this.createUI()
+            components: this.createUI(),
+            flags: MessageFlags.IsComponentsV2
         }
     }
 
