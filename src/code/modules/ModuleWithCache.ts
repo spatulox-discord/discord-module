@@ -8,13 +8,13 @@ import {CacheManager, SimpleMutex} from "@spatulox/utils";
 export abstract class ModuleWithCache<TCache> extends Module {
 
     protected abstract cacheKey: string
-    protected abstract cacheData: TCache
+    protected cacheData: TCache = this.initData()
     protected abstract initData(): TCache
 
     private static writeMutex: SimpleMutex = new SimpleMutex()
 
     protected async loadCache() {
-        const cache = await CacheManager.getOrCreateCache<TCache>(this.cacheKey, this.initData())
+        const cache = await CacheManager.getOrCreateCache<TCache>(this.cacheKey, this.cacheData)
         if(cache){
             this.cacheData = cache
         }

@@ -8,11 +8,6 @@ import {
 } from "discord.js";
 import {Log} from "@spatulox/utils";
 
-interface ModuleWithCachedMessageCache {
-    channel_id: string,
-    message_id: string
-}
-
 /**
  * You need to call initCache in the constructor in order to init the cache and load it
  */
@@ -35,8 +30,6 @@ export abstract class ModuleWithCachedMessage extends ModuleWithCache<{
     abstract getChannel(): Promise<GuildBasedChannel | null>
     abstract buildMessage(): string | MessageCreateOptions
     abstract editMessage(): string | MessageEditOptions
-
-    protected cacheData: ModuleWithCachedMessageCache = {channel_id:"", message_id:""}
 
     get message(): Message | null {
         return this._message
