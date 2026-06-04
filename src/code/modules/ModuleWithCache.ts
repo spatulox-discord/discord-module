@@ -9,11 +9,12 @@ export abstract class ModuleWithCache<TCache> extends Module {
 
     protected abstract cacheKey: string
     protected abstract cacheData: TCache
+    protected abstract initData(): TCache
 
     private static writeMutex: SimpleMutex = new SimpleMutex()
 
     protected async loadCache() {
-        const cache = await CacheManager.getOrCreateCache<TCache>(this.cacheKey, this.cacheData)
+        const cache = await CacheManager.getOrCreateCache<TCache>(this.cacheKey, this.initData())
         if(cache){
             this.cacheData = cache
         }
