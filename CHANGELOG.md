@@ -1,7 +1,13 @@
 # Changelog
 Date format : dd/mm/yyy
 
-### 27/05/2026 - 0.9.0
+
+### 27/05/2026 - 0.10.0
+- Change :
+  - Introduce an abstract "initData()" into `ModuleWithCache` to create default data
+  - Make `ModuleWithCachedMessage` more robust to errors (message deletion while the bot is running)
+
+### 27/05/2026 - 0.9.0 / 0.9.1 / 0.9.2 / 0.9.3
 - Change :
   - Add `ModuleWithCachedMessage` which basically is just a wrapper of `ModuleWithCache` bu for a message
 
