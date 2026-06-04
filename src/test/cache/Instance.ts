@@ -7,6 +7,9 @@ interface cache {
 }
 
 export class InstanceCache extends ModuleWithCache<cache> {
+    protected initData(): cache {
+        return {test: 0}
+    }
     name: string = "Instance Cache";
     description: string = "Statistics with Static Cache";
 

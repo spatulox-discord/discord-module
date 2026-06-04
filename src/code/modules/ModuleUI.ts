@@ -26,11 +26,16 @@ type DynamicPage = Record<number, SectionBuilder[]>
 export class ModuleUI extends ModuleWithCachedMessage {
 
     async getChannel(): Promise<GuildBasedChannel | null> {
-        const chan = await this.client.channels.fetch(this.cacheData.channel_id)
-        if (chan && chan.isSendable() && !chan.isDMBased()){
+        try {
+            const chan = await this.client.channels.fetch(this.cacheData.channel_id/* == "" ? this.tmp_channel_id : this.cacheData.channel_id*/)
+            if (chan && chan.isSendable() && !chan.isDMBased()){
                 return chan
+            }
+            return null
+        } catch (error) {
+            console.log(error)
+            return null
         }
-        return null
     }
 
     buildMessage(): string | MessageCreateOptions {
@@ -68,10 +73,14 @@ export class ModuleUI extends ModuleWithCachedMessage {
     private uiResetTimeout: NodeJS.Timeout | null = null;
     private readonly UI_RESET_TIMEOUT_MS = Time.minute.MIN_02.toMilliseconds();
 
+    private readonly tmp_channel_id: string = ""
+
     constructor(client: Client, channel_id: string) {
         super()
         this.client = client;
-        this.setup(channel_id)
+        this.tmp_channel_id = channel_id;
+        this.setup()
+        setTimeout(() => {this.triggerUpdateMessage()}, Time.second.SEC_10.toMilliseconds())
     }
 
     override disable() {
@@ -82,12 +91,15 @@ export class ModuleUI extends ModuleWithCachedMessage {
         return
     }
 
-    private async setup(channel_id: string): Promise<void> {
-        await this.loadCache()
-        if(this.cacheData.channel_id == null || this.cacheData.channel_id == ""){
-            this.cacheData.channel_id = channel_id
-            await this.writeCache()
+    protected initData(): { channel_id: string; message_id: string } {
+        return {
+            channel_id: this.tmp_channel_id,
+            message_id: "",
         }
+    }
+
+    private async setup(): Promise<void> {
+        await this.loadCache()
         await this.registerButtons()
     }
 
