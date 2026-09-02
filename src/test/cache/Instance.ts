@@ -14,7 +14,6 @@ export class InstanceCache extends ModuleWithCache<cache> {
     description: string = "Statistics with Static Cache";
 
     cacheKey: string = "instance_cache"
-    cacheData: cache = {test: 0}
 
     get events(): ModuleEventsMap {
         return {}

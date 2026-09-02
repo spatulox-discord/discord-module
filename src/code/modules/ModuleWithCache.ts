@@ -1,5 +1,6 @@
 import {Module} from "../Module";
 import {CacheManager, SimpleMutex} from "@spatulox/utils";
+import {mergeWithDefault} from "./cacheMerge";
 
 /**
  * cacheKey : The name of the file where the cache is going to be
@@ -13,11 +14,19 @@ export abstract class ModuleWithCache<TCache> extends Module {
 
     private static writeMutex: SimpleMutex = new SimpleMutex()
 
+    /**
+     * initData() is called again here, and not only in the property initializer above, because
+     * that initializer runs inside the base constructor : the subclass fields and constructor
+     * body are not assigned yet, so anything initData() reads from the instance is undefined.
+     *
+     * The stored cache is then merged over those default values, so a cache file written by an
+     * older version (or missing a key for any other reason) keeps a usable default instead of
+     * an undefined value.
+     */
     protected async loadCache() {
-        const cache = await CacheManager.getOrCreateCache<TCache>(this.cacheKey, this.cacheData)
-        if(cache){
-            this.cacheData = cache
-        }
+        const defaultData = this.initData()
+        const cache = await CacheManager.getOrCreateCache<TCache>(this.cacheKey, defaultData)
+        this.cacheData = cache ? mergeWithDefault(defaultData, cache) : defaultData
     }
 
     protected async syncCache(cacheData: TCache) : Promise<void> {

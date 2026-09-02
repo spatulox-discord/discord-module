@@ -27,7 +27,10 @@ export class ModuleUI extends ModuleWithCachedMessage {
 
     async getChannel(): Promise<GuildBasedChannel | null> {
         try {
-            const chan = await this.client.channels.fetch(this.cacheData.channel_id/* == "" ? this.tmp_channel_id : this.cacheData.channel_id*/)
+            const channel_id = this.cacheData.channel_id || this.tmp_channel_id
+            // Never let an empty/undefined id reach the API : it would request /channels/undefined
+            if(!channel_id) return null
+            const chan = await this.client.channels.fetch(channel_id)
             if (chan && chan.isSendable() && !chan.isDMBased()){
                 return chan
             }

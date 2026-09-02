@@ -69,7 +69,7 @@ export abstract class ModuleWithCachedMessage extends ModuleWithCache<{
 
     private async sendMessage(){
         try {
-            if(this.cacheData.channel_id == "") return
+            if(!this.cacheData.channel_id) return
             const channel = await this.getChannel()
             if(!channel || !channel?.isSendable()) return
             const msg = await channel.send(this.buildMessage())
@@ -84,10 +84,10 @@ export abstract class ModuleWithCachedMessage extends ModuleWithCache<{
 
     private async ensureMessageExist(initMsg: boolean = false): Promise<boolean> {
         try {
-            if(this.cacheData.channel_id == null || this.cacheData.channel_id == "") {
+            if(!this.cacheData.channel_id) {
                 return false
             }
-            if(this.cacheData.message_id == null || this.cacheData.message_id == "") {
+            if(!this.cacheData.message_id) {
                 return false
             }
             const channel = await this.getChannel()

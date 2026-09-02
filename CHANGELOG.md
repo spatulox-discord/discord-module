@@ -2,6 +2,12 @@
 Date format : dd/mm/yyy
 
 
+### 02/09/2026 - 0.10.2
+- Fix :
+  - `initData()` is now called again in `loadCache()`, once the module is fully constructed. The `cacheData` property initializer runs inside the base constructor, so anything `initData()` read from the instance (like a channel id given to the constructor) was still undefined, and `JSON.stringify` dropped those keys when creating the cache file (issue #8)
+  - The stored cache is now merged over the default data of `initData()` (both in `ModuleWithCache` and `ModuleWithStaticCache`), so a cache file missing a key keeps its default value instead of an undefined one
+  - `ModuleWithCachedMessage` and `ModuleUI` no longer send an undefined channel id to the Discord API (`GET /channels/undefined`, "Invalid Form Body")
+
 ### 27/05/2026 - 0.10.0
 - Change :
   - Introduce an abstract "initData()" into `ModuleWithCache` to create default data

@@ -1,5 +1,6 @@
 import {Module} from "../Module";
 import {CacheManager, SimpleMutex} from "@spatulox/utils";
+import {mergeWithDefault} from "./cacheMerge";
 
 /**
  * cacheKey : The name of the file where the cache is going to be
@@ -25,7 +26,8 @@ export abstract class ModuleWithStaticCache extends Module {
         this.assertOverridden()
         const cache = await CacheManager.getOrCreateCache<typeof this.cacheData>(this.cacheKey, this.cacheData)
         if(cache) {
-            this.cacheData = cache
+            // Keep the default value of the keys missing from the stored cache
+            this.cacheData = mergeWithDefault(this.cacheData, cache)
         }
     }
 
