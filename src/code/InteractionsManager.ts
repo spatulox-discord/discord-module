@@ -155,7 +155,7 @@ export class InteractionsManager {
             this.startWithSet.add(interaction.key)
         }
 
-        if(interaction.matchType == InteractionMatchType.EXACT){
+        if(interaction.matchType == InteractionMatchType.END_WITH){
             this.endWithSet.add(interaction.key)
         }
         return true;
