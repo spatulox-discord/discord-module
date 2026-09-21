@@ -1,6 +1,19 @@
 # Changelog
 Date format : dd/mm/yyy
 
+### 21/09/2026 - 0.11.1
+- Fix :
+  - `InteractionMatchType.END_WITH` is now functional. `_register()` was testing `EXACT` instead of `END_WITH` when filling `endWithSet`, so suffix patterns were never matched (the dispatcher threw `No handler registered for "<id>"`) while every `EXACT` key was wrongly scanned as a suffix pattern
+- Doc :
+  - Rewrite `README.md` : fix the documented API (`ModuleManager.createOrGetInstance`, `InteractionsManager.createOrGetInstance`, `new ModuleUI(client, channelId)` instead of the non-existent `sendUIToChannel()`), and document the cache modules, `ModuleRegistry`, `InteractionMatchType` and the per-module settings pages
+
+### 21/09/2026 - 0.11.0
+- Change :
+  - A `Module` can now declare its own settings page by overriding `openSettings(interaction)`. Such a module is displayed with a "Show Module" button instead of the enable/disable one, and its own page shows a ⚙️ button next to the enable/disable one. The module fully owns the interaction (ephemeral reply, modal, ...). Works on `MultiModule` too
+  - `MultiModule.createModuleUI()` now reuses `Module.createShowModuleUI()` instead of duplicating it
+- Fix :
+  - Targeting a simple (non `MultiModule`) module in the UI no longer falls back to the root module list
+  - The anti double-click guard of the "Show Module" button no longer leaves the interaction hanging ("This interaction failed")
 
 ### 02/09/2026 - 0.10.2
 - Fix :
