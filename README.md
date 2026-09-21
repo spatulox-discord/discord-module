@@ -75,9 +75,37 @@ client.once(Events.ClientReady, () => {
 });
 ```
 
+3. Module with a settings page
+
+A module can declare its own settings page by overriding `openSettings()`.
+When it does, the module list shows a **Show Module** button instead of the enable/disable one,
+and the module page shows a ⚙️ button next to the enable/disable one.
+The module fully owns the interaction : reply in ephemeral, open a modal, whatever you want.
+
+```ts
+    export class VolumeModule extends ModuleWithCache<{volume: number}> {
+        public name: string = "Volume Module";
+        public description: string = "Control the volume";
+        protected cacheKey: string = "volume_module";
+        protected initData() { return {volume: 50} }
+        public get events(): ModuleEventsMap { return {} }
+
+        // Overriding this is enough : the ⚙️ button shows up automatically
+        override async openSettings(interaction: ButtonInteraction): Promise<void> {
+            await interaction.reply({
+                content: `Current volume : ${this.cache.volume}`,
+                flags: MessageFlags.Ephemeral
+            })
+        }
+    }
+```
+
+This works on a `MultiModule` too : its page then shows ⚙️ + enable/disable **and** the list of its submodules.
+
 | Functionnalities    | Without Modules  | With Module   |
 |---------------------|------------------|---------------|
 | Hidden client.on    | ❌                | ✅             |
 | Live module enabled | ❌ (Need restart) | ✅ (One click) |
 | Organised           | ❌                | ✅             |
 | Automatic interaction binding           | ❌                | ✅             |
+| Per-module settings page           | ❌                | ✅             |

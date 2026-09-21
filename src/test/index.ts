@@ -18,6 +18,7 @@ import {RandomModule5} from "./random/RandomModule5";
 import {RandomModule6} from "./random/RandomModule6";
 import {InstanceCache} from "./cache/Instance";
 import {MiscStatsStaticCache} from "./cache/MiscStatsStaticCache";
+import {SettingsModuleTest} from "./SettingsModuleTest";
 
 const client = new Client({
     intents: [
@@ -35,6 +36,7 @@ client.once(Events.ClientReady, () => {
     //manager.register(new PongModule());
     manager.register(new MiscStatsStaticCache())
     manager.register(new InstanceCache())
+    manager.register(new SettingsModuleTest())
     manager.register(new RandomModule());
     manager.register(new RandomModule1());
     manager.register(new RandomModule2());

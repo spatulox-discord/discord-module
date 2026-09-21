@@ -113,6 +113,36 @@ export class ModuleUI extends ModuleWithCachedMessage {
         interactionManager.registerButton("dm_go_back", (interaction: ButtonInteraction) => { this.goBack(interaction) })
         interactionManager.registerButton("toggle_", (interaction: ButtonInteraction) => { this.toggleModule(interaction) }, InteractionMatchType.START_WITH)
         interactionManager.registerButton("show_", (interaction: ButtonInteraction) => { this.showSubModule(interaction) }, InteractionMatchType.START_WITH)
+        interactionManager.registerButton("settings_", (interaction: ButtonInteraction) => { this.openModuleSettings(interaction) }, InteractionMatchType.START_WITH)
+    }
+
+    /**
+     * The Module owns the response here : we never deferUpdate() in its place,
+     * we only make sure a crashing Module does not leave the interaction hanging.
+     */
+    private async openModuleSettings(interaction: ButtonInteraction) {
+        const module_id_from_btn_id = this.getModuleNameFromButtonId(interaction, "settings_")
+        if(!module_id_from_btn_id) return
+        const mod = ModuleRegistry.getModule(module_id_from_btn_id)
+        if(!mod || !mod.hasSettings){
+            interaction.reply({
+                content: `This module has no settings page : ${module_id_from_btn_id}`,
+                flags: MessageFlags.Ephemeral
+            })
+            return
+        }
+
+        try {
+            await mod.openSettings(interaction)
+        } catch (error) {
+            console.log(error)
+            if(!interaction.replied && !interaction.deferred){
+                interaction.reply({
+                    content: `Unable to open the settings of ${mod.name}`,
+                    flags: MessageFlags.Ephemeral
+                })
+            }
+        }
     }
 
     private async goBack(interaction: ButtonInteraction) {
@@ -163,6 +193,7 @@ export class ModuleUI extends ModuleWithCachedMessage {
 
         const mod_str = mod != null ? mod.name : module_id_from_btn_id
         if(this.breadcrumbTrailSet.has(mod_str)){
+            interaction.deferUpdate()
             return
         }
         this.breadcrumbTrail.push(mod_str)
@@ -215,6 +246,7 @@ export class ModuleUI extends ModuleWithCachedMessage {
         }
         const container = new ContainerBuilder()
         this.createHeaderContainer(container)
+        this.createTargetDetail(container, multi) // Before counting the components, so the budget stays correct
         const footer = this.createFooterbuttonRow() // Here it's used to determine the number of component
         const maxComponents = this.MAX_COMPONENT_PER_PAGE - this.countComponents([container, footer])
 
@@ -245,11 +277,31 @@ export class ModuleUI extends ModuleWithCachedMessage {
             .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
     }
 
+    /**
+     * Page of a single targeted Module : its title, its description and its own buttons
+     * (⚙️ settings when it has one, + enable/disable). A SectionBuilder only accepts one
+     * accessory, hence the ActionRow.
+     */
+    private createTargetDetail(container: ContainerBuilder, mod: TrucBidule) {
+        if(mod === "root") return
+
+        container
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${mod.enabled ? "🟢" : "🔴"} ${mod.name}`))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`${mod.description}`))
+            .addActionRowComponents(mod.createModuleDetailRow())
+            .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
+    }
+
     //private createFooterContainer(container: ContainerBuilder){}
     // 32 component max
     private createDynamicUI(_container: ContainerBuilder, multiMod: TrucBidule, maxComponent: number): DynamicPage {
         if (multiMod instanceof MultiModule) {
             return this.buildDynamicPage(multiMod.subModules, maxComponent);
+        }
+
+        // A simple Module has no submodule : only its own detail block is displayed
+        if (multiMod !== "root") {
+            return {0: []};
         }
 
         const root = ModuleRegistry.getRoot() ?? [];

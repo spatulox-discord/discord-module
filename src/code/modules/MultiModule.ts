@@ -1,9 +1,7 @@
 import { ModuleManager } from '../ModuleManager';
 import {
-    ButtonBuilder,
-    ButtonInteraction, ButtonStyle,
+    ButtonInteraction,
     ContainerBuilder, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize,
-    TextDisplayBuilder,
 } from 'discord.js';
 import {Module, ModuleEventsMap} from "../Module";
 
@@ -25,16 +23,9 @@ export abstract class MultiModule extends Module {
         return [] as ModuleEventsMap;
     }
 
+    // A MultiModule is always browsable, whether or not it declares settings
     override createModuleUI(): SectionBuilder {
-        const name = `show_${this.name.toLowerCase()}`;
-
-        if(name.length > 100){
-            throw new Error(`In order to create the Module UI, buttons customId should not be more than 100 char, please reduce the name of your Module : ${this.name}`);
-        }
-        return new SectionBuilder()
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${this.enabled ? "🟢" : "🔴"} ${this.name}`))
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`${this.description}`))
-            .setButtonAccessory(new ButtonBuilder().setLabel("Show Module").setCustomId(name).setStyle(ButtonStyle.Primary))
+        return this.createShowModuleUI()
     }
 
     protected createSubmoduleUI(){

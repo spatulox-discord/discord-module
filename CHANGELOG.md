@@ -2,6 +2,14 @@
 Date format : dd/mm/yyy
 
 
+### 21/09/2026 - 0.11.0
+- Change :
+  - A `Module` can now declare its own settings page by overriding `openSettings(interaction)`. Such a module is displayed with a "Show Module" button instead of the enable/disable one, and its own page shows a ⚙️ button next to the enable/disable one. The module fully owns the interaction (ephemeral reply, modal, ...). Works on `MultiModule` too
+  - `MultiModule.createModuleUI()` now reuses `Module.createShowModuleUI()` instead of duplicating it
+- Fix :
+  - Targeting a simple (non `MultiModule`) module in the UI no longer falls back to the root module list
+  - The anti double-click guard of the "Show Module" button no longer leaves the interaction hanging ("This interaction failed")
+
 ### 02/09/2026 - 0.10.2
 - Fix :
   - `initData()` is now called again in `loadCache()`, once the module is fully constructed. The `cacheData` property initializer runs inside the base constructor, so anything `initData()` read from the instance (like a channel id given to the constructor) was still undefined, and `JSON.stringify` dropped those keys when creating the cache file (issue #8)
