@@ -4,6 +4,8 @@ Date format : dd/mm/yyy
 ### 21/09/2026 - 0.11.1
 - Fix :
   - `InteractionMatchType.END_WITH` is now functional. `_register()` was testing `EXACT` instead of `END_WITH` when filling `endWithSet`, so suffix patterns were never matched (the dispatcher threw `No handler registered for "<id>"`) while every `EXACT` key was wrongly scanned as a suffix pattern
+- Doc :
+  - Rewrite `README.md` : fix the documented API (`ModuleManager.createOrGetInstance`, `InteractionsManager.createOrGetInstance`, `new ModuleUI(client, channelId)` instead of the non-existent `sendUIToChannel()`), and document the cache modules, `ModuleRegistry`, `InteractionMatchType` and the per-module settings pages
 
 ### 21/09/2026 - 0.11.0
 - Change :
